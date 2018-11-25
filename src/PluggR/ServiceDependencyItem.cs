@@ -1,10 +1,10 @@
 ﻿using Microsoft.CodeAnalysis.CSharp.Syntax;
 
-namespace PluggR.Analysis
+namespace PluggR
 {
-    public class ServiceRegistrationModel
+    public class ServiceDependencyItem : DependencyItem
     {
-        public ServiceRegistrationModel(InvocationExpressionSyntax expression)
+        public ServiceDependencyItem(InvocationExpressionSyntax expression)
         {
             Expression = expression;
         }

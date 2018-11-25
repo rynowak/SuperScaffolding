@@ -52,7 +52,7 @@ namespace Microsoft.Extensions.ProjectModel
 
             if (result.ExitCode != 0)
             {
-                throw CreateProjectContextCreationFailedException(_projectPath, errors);
+                throw CreateProjectContextCreationFailedException(_projectPath, output, errors);
             }
             try
             {
@@ -68,15 +68,21 @@ namespace Microsoft.Extensions.ProjectModel
             }
         }
 
-        private Exception CreateProjectContextCreationFailedException(string _projectPath, List<string> errors)
+        private Exception CreateProjectContextCreationFailedException(string projectPath, List<string> output, List<string> errors)
         {
-            var errorMsg = $"Failed to get Project Context for {_projectPath}.";
-            if (errors != null)
+            var message = $"Failed to get Project Context for {projectPath}.";
+
+            if (output != null)
             {
-                errorMsg += $"{Environment.NewLine} { string.Join(Environment.NewLine, errors)} ";
+                message += $"{Environment.NewLine} { string.Join(Environment.NewLine, output)} ";
             }
 
-            return new InvalidOperationException(errorMsg);
+            if (errors != null)
+            {
+                message += $"{Environment.NewLine} { string.Join(Environment.NewLine, errors)} ";
+            }
+
+            return new InvalidOperationException(message);
         }
     }
 }

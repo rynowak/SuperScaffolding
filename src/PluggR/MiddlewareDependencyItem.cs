@@ -1,10 +1,10 @@
 ﻿using Microsoft.CodeAnalysis.CSharp.Syntax;
 
-namespace PluggR.Analysis
+namespace PluggR
 {
-    public class MiddlewareRegistrationModel
+    public class MiddlewareDependencyItem : DependencyItem
     {
-        public MiddlewareRegistrationModel(InvocationExpressionSyntax expression)
+        public MiddlewareDependencyItem(InvocationExpressionSyntax expression)
         {
             Expression = expression;
         }

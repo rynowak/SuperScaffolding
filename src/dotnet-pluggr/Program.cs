@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Diagnostics;
 
-namespace Pluggr
+namespace PluggR
 {
     internal class Program
     {

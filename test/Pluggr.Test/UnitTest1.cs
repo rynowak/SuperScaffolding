@@ -1,7 +1,7 @@
 using System;
 using Xunit;
 
-namespace Pluggr.Test
+namespace PluggR.Test
 {
     public class UnitTest1
     {

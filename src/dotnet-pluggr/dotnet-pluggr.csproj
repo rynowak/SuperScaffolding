@@ -1,17 +1,33 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <OutputType>Exe</OutputType>
     <TargetFramework>netcoreapp2.1</TargetFramework>
-    <RootNamespace>Pluggr</RootNamespace>
+    <RootNamespace>PluggR</RootNamespace>
   </PropertyGroup>
 
   <ItemGroup>
+    <EmbeddedResource Include="InjectPluggR.targets" />
+    <Content Include="build\*.targets" CopyToOutputDirectory="PreserveNewest" />
+    <Content Include="buildMultiTargeting\*.targets" CopyToOutputDirectory="PreserveNewest" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\PluggR.Tasks\PluggR.Tasks.csproj" ReferenceOutputAssembly="false" TargetFrameworks="net461;netstandard2.0" />
     <ProjectReference Include="..\Pluggr\Pluggr.csproj" />
   </ItemGroup>
 
   <ItemGroup>
     <PackageReference Include="Microsoft.Extensions.CommandLineUtils.Sources" Version="2.2.0-preview1-34411" />
   </ItemGroup>
+
+  <Target Name="LayoutDependencies" BeforeTargets="Build" Condition="'$(IsInnerBuild)' != 'true'">
+    <ItemGroup>
+      <TasksOutput Include="..\PluggR.Tasks\bin\$(Configuration)\net461*\PluggR.Tasks.*" />
+      <TasksOutput Include="..\PluggR.Tasks\bin\$(Configuration)\netstandard2.0*\PluggR.Tasks.*" />
+    </ItemGroup>
+
+    <Copy SourceFiles="@(TasksOutput)" DestinationFiles="$(OutputPath)tasks\%(RecursiveDir)%(FileName)%(Extension)" />
+  </Target>
 
 </Project>
