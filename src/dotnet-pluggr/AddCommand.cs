@@ -42,9 +42,9 @@ namespace PluggR
                 return 1;
             }
 
-            var context = Analysis.CreateContext();
+            var analysisContext = Analysis.CreateContext();
             var compilation = await GetCompilationAsync(projectPath);
-            context.SetData<CSharpCompilation>(compilation);
+            analysisContext.SetData<CSharpCompilation>(compilation);
 
             var operations = new List<Operation>();
             for (var i = 0; i < Plugins.Values.Count; i++)
@@ -59,7 +59,7 @@ namespace PluggR
                     return 1;
                 }
 
-                operations.AddRange(await plugin.GetOperationsAsync(context));
+                operations.AddRange(await plugin.GetOperationsAsync(analysisContext));
             }
 
             Out.WriteLine("Resolved operations:");
@@ -71,10 +71,15 @@ namespace PluggR
 
             if (!DryRun.HasValue())
             {
+                var editorContext = new EditorContext();
+                editorContext.SetData<CSharpCompilation>(await analysisContext.GetDataAsync<CSharpCompilation>().ConfigureAwait(false));
+                var editor = Editor.Create();
+
                 Out.WriteLine("Performing operations:");
                 for (var i = 0; i < operations.Count; i++)
                 {
                     Out.WriteLine($"\t{operations[i]}");
+                    await editor.ApplyAsync(editorContext, operations[i]);
                 }
             }
             Out.WriteLine();

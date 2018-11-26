@@ -5,6 +5,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
+using Microsoft.CodeAnalysis.CSharp.Syntax;
 
 namespace PluggR
 {
@@ -27,21 +28,35 @@ namespace PluggR
                 throw new ArgumentNullException(nameof(compilation));
             }
 
+            var configureMethods = new List<MethodDeclarationSyntax>(); 
             var results = new List<MiddlewareDependencyItem>();
-            foreach (var startup in compilation.SyntaxTrees.OfType<CSharpSyntaxTree>().Where(t => IsStartup(t)))
+            foreach (var syntaxTree in compilation.SyntaxTrees.OfType<CSharpSyntaxTree>().Where(t => IsStartup(t)))
             {
-                var methods = await FindMethodDeclarationVisitor.GetMethodsAsync(compilation, startup, null, "Configure").ConfigureAwait(false);
+                var methods = await FindMethodDeclarationVisitor.GetMethodsAsync(compilation, syntaxTree, null, "Configure").ConfigureAwait(false);
+                if (methods.Count == 0)
+                {
+                    continue;
+                }
+
                 for (var i = 0; i < methods.Count; i++)
                 {
-                    var calls = await FindInvocationExpressionVisitor.GetMethodCallsAsync(compilation, startup, methods[i], ApplicationBuilderFullTypeName).ConfigureAwait(false);
+                    var calls = await FindInvocationExpressionVisitor.GetMethodCallsAsync(compilation, syntaxTree, methods[i], ApplicationBuilderFullTypeName).ConfigureAwait(false);
                     for (var j = 0; j < calls.Count; j++)
                     {
                         results.Add(new MiddlewareDependencyItem(compilation, calls[j]));
                     }
                 }
+
+                configureMethods.AddRange(methods);
+
+                // Track nodes so we can find them later.
+                var root = await syntaxTree.GetRootAsync().ConfigureAwait(false);
+                var tracked = root.TrackNodes(methods);
+                compilation = compilation.ReplaceSyntaxTree(syntaxTree, syntaxTree.WithRootAndOptions(tracked, syntaxTree.Options));
             }
 
-            context.SetData(new MiddlewareDependencySet(results));
+            context.SetData(new MiddlewareDependencySet(configureMethods, results));
+            context.SetData<CSharpCompilation>(compilation);
         }
 
         private static bool IsStartup(SyntaxTree syntaxTree)

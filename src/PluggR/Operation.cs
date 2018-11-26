@@ -4,6 +4,10 @@ namespace PluggR
 {
     public abstract class Operation 
     {
+        internal Operation()
+        {
+        }
+
         public static Operation CreateEmpty<T>(T item) where T : DependencyItem
         {
             if (item == null)
@@ -17,6 +21,10 @@ namespace PluggR
 
     public abstract class Operation<T> : Operation where T : DependencyItem
     {
+        public Operation()
+        {
+        }
+
         internal class Empty : Operation<T>
         {
             public Empty(T item)

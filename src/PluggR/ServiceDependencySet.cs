@@ -3,22 +3,31 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.CodeAnalysis.CSharp.Syntax;
 
 namespace PluggR
 {
     public sealed class ServiceDependencySet : DependencySet<ServiceDependencyItem>
     {
-        public ServiceDependencySet(IEnumerable<ServiceDependencyItem> items)
+        public ServiceDependencySet(IEnumerable<MethodDeclarationSyntax> configureServicesMethods, IEnumerable<ServiceDependencyItem> items)
         {
+            if (configureServicesMethods == null)
+            {
+                throw new ArgumentNullException(nameof(configureServicesMethods));
+            }
+
             if (items == null)
             {
                 throw new ArgumentNullException(nameof(items));
             }
 
             Items = new ReadOnlyCollection<ServiceDependencyItem>(items.ToArray());
+            ConfigureServicesMethods = configureServicesMethods;
         }
 
         public ReadOnlyCollection<ServiceDependencyItem> Items { get; }
+
+        public IEnumerable<MethodDeclarationSyntax> ConfigureServicesMethods { get; }
 
         public Task<Operation> ResolveAsync(string typeName, string methodName)
         {
@@ -48,16 +57,19 @@ namespace PluggR
                 }
             }
 
-            return Task.FromResult<Operation>(new AddOperation(typeName, methodName));
+            return Task.FromResult<Operation>(new AddOperation(ConfigureServicesMethods.First(), typeName, methodName));
         }
 
         internal class AddOperation : Operation<ServiceDependencyItem>
         {
-            public AddOperation(string typeName, string methodName)
+            public AddOperation(MethodDeclarationSyntax configureServicesMethod, string typeName, string methodName)
             {
+                ConfigureServicesMethod = configureServicesMethod;
                 TypeName = typeName;
                 MethodName = methodName;
             }
+
+            public MethodDeclarationSyntax ConfigureServicesMethod { get; }
 
             public string TypeName { get; }
 

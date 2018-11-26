@@ -19,7 +19,6 @@ namespace PluggR
             _lock = new object();
         }
 
-
         public async Task<T> GetDataAsync<T>(CancellationToken cancellationToken = default(CancellationToken)) where T : class
         {
             Task<object> task;
