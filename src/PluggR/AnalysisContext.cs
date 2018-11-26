@@ -69,5 +69,21 @@ namespace PluggR
                 _analysis[typeof(T)] = analysis;
             }
         }
+
+        public void TryAddAnalysis<T>(Analysis analysis) where T : class
+        {
+            if (analysis == null)
+            {
+                throw new ArgumentNullException(nameof(analysis));
+            }
+
+            lock (_lock)
+            {
+                if (!_analysis.ContainsKey(typeof(T)))
+                {
+                    _analysis[typeof(T)] = analysis;
+                }
+            }
+        }
     }
 }

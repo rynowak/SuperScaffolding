@@ -8,6 +8,7 @@ namespace PluggR
         {
             Commands.Add(new AddCommand());
             Commands.Add(new AnalyzeCommand());
+            Commands.Add(new ListCommand());
 
             HelpOption("-h|--help");
 

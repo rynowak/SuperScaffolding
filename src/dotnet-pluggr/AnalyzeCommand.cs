@@ -1,9 +1,6 @@
-﻿using System;
-using System.IO;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.Extensions.CommandLineUtils;
-using PluggR;
 
 namespace PluggR
 {
@@ -34,19 +31,20 @@ namespace PluggR
             var compilation = await GetCompilationAsync(projectPath);
             context.SetData<CSharpCompilation>(compilation);
 
-            Console.WriteLine("Services:");
+            Out.WriteLine("Services:");
             foreach (var service in (await context.GetDataAsync<ServiceDependencySet>()).Items)
             {
-                Console.WriteLine($"\t{service}");
+                Out.WriteLine($"\t{service}");
             }
-            Console.WriteLine();
+            Out.WriteLine();
 
-            Console.WriteLine("Middleware:");
+            Out.WriteLine("Middleware:");
             foreach (var middleware in (await context.GetDataAsync<MiddlewareDependencySet>()).Items)
             {
-                Console.WriteLine($"\t{middleware.ToString()}");
+                Out.WriteLine($"\t{middleware.ToString()}");
             }
-            Console.WriteLine();
+            Out.WriteLine();
+
             return 0;
         }
     }

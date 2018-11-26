@@ -1,8 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Threading.Tasks;
-using Microsoft.CodeAnalysis.CSharp;
+﻿using System.Threading.Tasks;
 using Microsoft.Extensions.CommandLineUtils;
+using PluggR.Plugins;
 
 namespace PluggR
 {
@@ -29,9 +27,11 @@ namespace PluggR
                 return 1;
             }
 
-            var context = Analysis.CreateContext();
-            var compilation = await GetCompilationAsync(projectPath);
-            context.SetData<CSharpCompilation>(compilation);
+            Out.WriteLine("Supported plugins:");
+            foreach (var (name, plugin) in KnownPlugins.Plugins)
+            {
+                Out.WriteLine($"\t{name} ({plugin.GetType().FullName})");
+            }
 
             return 0;
         }

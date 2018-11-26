@@ -38,7 +38,7 @@ namespace PluggR
                     var calls = await FindInvocationExpressionVisitor.GetMethodCallsAsync(compilation, startup, methods[i], ServiceCollectionFullTypeName).ConfigureAwait(false);
                     for (var j = 0; j < calls.Count; j++)
                     {
-                        results.Add(new ServiceDependencyItem(calls[j]));
+                        results.Add(new ServiceDependencyItem(compilation, calls[j]));
                     }
                 }
             }

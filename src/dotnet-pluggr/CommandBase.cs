@@ -1,5 +1,4 @@
-﻿using System;
-using System.Diagnostics;
+﻿using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
@@ -68,7 +67,7 @@ namespace PluggR
 
             if (!File.Exists(projectPath))
             {
-                Console.WriteLine($"Project file {projectPath} not found.");
+                Out.WriteLine($"Project file {projectPath} not found.");
                 projectPath = null;
                 return false;
             }

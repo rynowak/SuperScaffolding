@@ -30,15 +30,13 @@ namespace PluggR
             var results = new List<MiddlewareDependencyItem>();
             foreach (var startup in compilation.SyntaxTrees.OfType<CSharpSyntaxTree>().Where(t => IsStartup(t)))
             {
-                var semanticModel = compilation.GetSemanticModel(startup);
-
                 var methods = await FindMethodDeclarationVisitor.GetMethodsAsync(compilation, startup, null, "Configure").ConfigureAwait(false);
                 for (var i = 0; i < methods.Count; i++)
                 {
                     var calls = await FindInvocationExpressionVisitor.GetMethodCallsAsync(compilation, startup, methods[i], ApplicationBuilderFullTypeName).ConfigureAwait(false);
                     for (var j = 0; j < calls.Count; j++)
                     {
-                        results.Add(new MiddlewareDependencyItem(calls[j]));
+                        results.Add(new MiddlewareDependencyItem(compilation, calls[j]));
                     }
                 }
             }
