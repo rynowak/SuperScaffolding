@@ -65,7 +65,7 @@ namespace PluggR
 
             public override string ToString()
             {
-                return base.ToString();
+                return $"app.{MethodName}(...) (add)";
             }
         }
     }
