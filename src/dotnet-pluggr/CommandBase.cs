@@ -19,7 +19,7 @@ namespace PluggR
             var obj = Path.Combine(Path.GetDirectoryName(projectPath), "obj");
             Directory.CreateDirectory(obj);
 
-            var inject = Path.Combine(obj, "InjectPluggR.targets");
+            var inject = Path.Combine(obj, $"{Path.GetFileName(projectPath)}.InjectPluggR.targets");
 
             try
             {
