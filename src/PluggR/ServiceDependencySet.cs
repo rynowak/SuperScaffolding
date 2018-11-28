@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
@@ -77,7 +78,7 @@ namespace PluggR
 
             public override string ToString()
             {
-                return $"services.{MethodName}(...) (add)";
+                return $"services.{MethodName}(...) (add to {Path.GetFileName(ConfigureServicesMethod.SyntaxTree.FilePath)})";
             }
         }
     }

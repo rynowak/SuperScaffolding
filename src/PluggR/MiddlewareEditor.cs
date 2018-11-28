@@ -1,4 +1,5 @@
 ﻿using System;
+using System.IO;
 using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.CodeAnalysis;
@@ -39,6 +40,8 @@ namespace PluggR
                                         IdentifierName("app"),
                                         IdentifierName("UseMvc")))))),
                     syntaxTree.Options);
+
+                File.WriteAllText(edited.FilePath, edited.GetRoot().NormalizeWhitespace().ToString());
 
                 compilation = compilation.ReplaceSyntaxTree(syntaxTree, edited);
                 context.SetData<CSharpCompilation>(compilation);
