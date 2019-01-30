@@ -5,13 +5,14 @@ using System.Threading.Tasks;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.Extensions.CommandLineUtils;
 using Microsoft.Extensions.ProjectModel;
+using Microsoft.VisualStudio.Web.CodeGeneration.Contracts.ProjectModel;
 using Microsoft.VisualStudio.Web.CodeGeneration.Utils;
 
 namespace PluggR
 {
     internal class CommandBase : CommandLineApplication
     {
-        protected async Task<CSharpCompilation> GetCompilationAsync(string projectPath)
+        protected async Task<(CSharpCompilation, IProjectContext)> GetCompilationAsync(string projectPath)
         {
             Out.WriteLine("Analyzing project...");
             var stopwatch = Stopwatch.StartNew();
@@ -38,12 +39,14 @@ namespace PluggR
                 var context = builder.Build();
 
                 var workspace = new RoslynWorkspace(context);
-                var project = workspace.CurrentSolution.Projects.Single();
+                //TODO: Made this first for now so a project with a P2P doesn't break immediately.
+                //but it's presumably the wrong thing to do long-term.
+                var project = workspace.CurrentSolution.Projects.First();
                 var compilation = (CSharpCompilation)await project.GetCompilationAsync().ConfigureAwait(false);
                 Out.WriteLine("Created compilation in: {0}ms", stopwatch.ElapsedMilliseconds);
                 Out.WriteLine();
 
-                return compilation;
+                return (compilation, context);
             }
             finally
             {

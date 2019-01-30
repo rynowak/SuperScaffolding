@@ -14,6 +14,8 @@ namespace PluggR.Plugins
 
             Add(new AzureStoragePlugin());
             Add(new MvcPlugin());
+            Add(new HealthCheckPlugin());
+            Add(new NSwagPlugin());
 
             void Add(Plugin plugin)
             {

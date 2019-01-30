@@ -38,7 +38,7 @@ namespace PluggR
                                     MemberAccessExpression(
                                         SyntaxKind.SimpleMemberAccessExpression,
                                         IdentifierName("app"),
-                                        IdentifierName("UseMvc")))))),
+                                        IdentifierName(add.MethodName)))))),
                     syntaxTree.Options);
 
                 File.WriteAllText(edited.FilePath, edited.GetRoot().NormalizeWhitespace().ToString());

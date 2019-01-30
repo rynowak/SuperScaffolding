@@ -12,6 +12,7 @@ namespace PluggR
 
             context.SetAnalysis<MiddlewareDependencySet>(new MiddlewareAnalysis());
             context.SetAnalysis<ServiceDependencySet>(new ServiceAnalysis());
+            context.SetAnalysis<PackageDependencySet>(new PackageAnalysis());
 
             return context;
         }
