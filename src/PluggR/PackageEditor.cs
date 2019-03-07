@@ -40,7 +40,11 @@ namespace PluggR
                 argumentString += $" --version { addOperation.PackageVersion}";
             }
 
-            var proc = Process.Start("dotnet", argumentString);
+            var processStartInfo = new ProcessStartInfo("dotnet", argumentString);
+            processStartInfo.WindowStyle = ProcessWindowStyle.Hidden;
+            processStartInfo.UseShellExecute = false;
+
+            var proc = Process.Start(processStartInfo);
             proc.WaitForExit();
         }
     }
