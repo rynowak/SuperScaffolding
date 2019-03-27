@@ -1,6 +1,7 @@
 ﻿using System.Threading.Tasks;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.Extensions.CommandLineUtils;
+using Microsoft.VisualStudio.Web.CodeGeneration.Contracts.ProjectModel;
 
 namespace PluggR
 {
@@ -28,9 +29,9 @@ namespace PluggR
             }
 
             var context = Analysis.CreateContext();
-            var compilation = await GetCompilationAsync(projectPath);
+            var (compilation, projectContext) = await GetCompilationAsync(projectPath);
             context.SetData<CSharpCompilation>(compilation);
-
+            context.SetData<IProjectContext>(projectContext);
             Out.WriteLine("Services:");
             foreach (var service in (await context.GetDataAsync<ServiceDependencySet>()).Items)
             {
@@ -44,6 +45,12 @@ namespace PluggR
                 Out.WriteLine($"\t{middleware.ToString()}");
             }
             Out.WriteLine();
+
+            Out.WriteLine("Packages:");
+            foreach (var package in (await context.GetDataAsync<PackageDependencySet>()).Items)
+            {
+                Out.WriteLine($"\t{package.Name} : {package.Version}");
+            }
 
             return 0;
         }

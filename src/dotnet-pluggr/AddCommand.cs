@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.Extensions.CommandLineUtils;
+using Microsoft.VisualStudio.Web.CodeGeneration.Contracts.ProjectModel;
 using PluggR.Plugins;
 
 namespace PluggR
@@ -43,8 +44,10 @@ namespace PluggR
             }
 
             var analysisContext = Analysis.CreateContext();
-            var compilation = await GetCompilationAsync(projectPath);
+            var (compilation, projectContext) = await GetCompilationAsync(projectPath);
+
             analysisContext.SetData<CSharpCompilation>(compilation);
+            analysisContext.SetData<IProjectContext>(projectContext);
 
             var operations = new List<Operation>();
             for (var i = 0; i < Plugins.Values.Count; i++)
@@ -73,6 +76,7 @@ namespace PluggR
             {
                 var editorContext = new EditorContext();
                 editorContext.SetData<CSharpCompilation>(await analysisContext.GetDataAsync<CSharpCompilation>().ConfigureAwait(false));
+                editorContext.SetData<IProjectContext>(await analysisContext.GetDataAsync<IProjectContext>().ConfigureAwait(false));
                 var editor = Editor.Create();
 
                 Out.WriteLine("Performing operations:");

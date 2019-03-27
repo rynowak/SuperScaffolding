@@ -12,6 +12,7 @@ namespace PluggR
             {
                 new ServiceEditor(),
                 new MiddlewareEditor(),
+                new PackageEditor()
             });
         }
 
