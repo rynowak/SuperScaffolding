@@ -1,1 +1,1 @@
-# PluggR
+# Super Scaffolding
